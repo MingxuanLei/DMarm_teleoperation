@@ -14,7 +14,7 @@
 - 从端切换 PV 模式并保持当前位置；
 - 后台线程执行单机同构遥操作；
 - GUI 中设置 CONTROL_HZ、PV_VEL_LIM、MAX_DELTA_PER_CYCLE、ALPHA、SCALE 等参数；
-- 实时显示主端 DH、从端 DH、从端目标 DH；
+- 实时显示主端 DH、从端 DH、从端目标 DH;
 - 停止遥操作后从端保持当前位置；
 - 清理时关闭并失能两台机械臂。
 """
@@ -72,7 +72,7 @@ DEFAULT_MAX_DELTA_PER_CYCLE = 0.02
 DEFAULT_ALPHA = 0.20
 DEFAULT_SCALE = [1, 1, 1, 1, 1, 1]
 DEFAULT_MOTOR_LIMIT_MARGIN = 0.003
-DEFAULT_CLIP_PRINT_INTERVAL = 100
+DEFAULT_CLIP_PRINT_INTERVAL = 1000
 
 STATUS_EMIT_PERIOD_S = 0.10
 

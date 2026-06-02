@@ -19,8 +19,8 @@ CHANNEL_INDEX = 0
 # 2. 遥操作参数
 # =========================
 
-CONTROL_HZ = 100.0
-PV_VEL_LIM = 0.5
+CONTROL_HZ = 500.0
+PV_VEL_LIM = 0.8
 
 # 第一次实验建议先小一点，例如 0.005~0.02
 MAX_DELTA_PER_CYCLE = 0.02
@@ -37,6 +37,11 @@ MOTOR_LIMIT_MARGIN = 0.003
 # 每隔多少次循环打印一次夹紧信息，避免刷屏
 CLIP_PRINT_INTERVAL = 100
 
+# 是否打印安全夹紧信息
+PRINT_CLIP_INFO = True
+
+# 夹紧量超过该阈值时才认为值得打印，单位 rad
+CLIP_PRINT_MIN_DELTA = 0.03
 # =========================
 # 3. CANFD 设备扫描函数
 # =========================
@@ -228,9 +233,14 @@ def safe_set_slave_target_dh(slave, target_dh, velocity_lim, loop_count=0):
     try:
         motor_target, clip_infos = dh_to_motor_near_current_clamped(slave, target_dh, MOTOR_LIMIT_MARGIN)
 
-        if clip_infos and loop_count % CLIP_PRINT_INTERVAL == 0:
+        large_clip_infos = [
+            item for item in clip_infos
+            if abs(item["clipped_motor"] - item["raw_motor"]) >= CLIP_PRINT_MIN_DELTA
+        ]
+
+        if PRINT_CLIP_INFO and large_clip_infos and loop_count % CLIP_PRINT_INTERVAL == 0:
             print("[INFO] 从端目标接近或超过电机限位，已进行安全夹紧：")
-            for item in clip_infos:
+            for item in large_clip_infos:
                 print(
                     f"  关节{item['joint']}: "
                     f"raw_motor={item['raw_motor']:.4f}, "
